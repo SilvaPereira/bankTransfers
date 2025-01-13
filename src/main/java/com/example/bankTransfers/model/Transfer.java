@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "transfers")
+@Table(name = "TRANSFERS")
 public class Transfer {
 
 	@Id
@@ -12,10 +12,10 @@ public class Transfer {
     private Long id;
 	
 	@Column(nullable = false)
-    private String fromAccount;
+    private Long fromAccount;
 
     @Column(nullable = false)
-    private String toAccount;
+    private Long toAccount;
 
     @Column(nullable = false)
     private BigDecimal amount;
@@ -26,10 +26,22 @@ public class Transfer {
     @Column(nullable = false)
     private BigDecimal fee;
 	
-	public Transfer(Long id, String fromAccount, String toAccount, BigDecimal amount, LocalDate scheduledDate,
+    public Transfer() {
+    	
+    }
+    
+	public Transfer(Long id, Long fromAccount, Long toAccount, BigDecimal amount, LocalDate scheduledDate,
 			BigDecimal fee) {
-		super();
 		this.id = id;
+		this.fromAccount = fromAccount;
+		this.toAccount = toAccount;
+		this.amount = amount;
+		this.scheduledDate = scheduledDate;
+		this.fee = fee;
+	}
+	
+	public Transfer(Long fromAccount, Long toAccount, BigDecimal amount, LocalDate scheduledDate,
+			BigDecimal fee) {
 		this.fromAccount = fromAccount;
 		this.toAccount = toAccount;
 		this.amount = amount;
@@ -45,11 +57,35 @@ public class Transfer {
 		return amount;
 	}
 
-	public String getFromAccount() {
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setFromAccount(Long fromAccount) {
+		this.fromAccount = fromAccount;
+	}
+
+	public void setToAccount(Long toAccount) {
+		this.toAccount = toAccount;
+	}
+
+	public void setAmount(BigDecimal amount) {
+		this.amount = amount;
+	}
+
+	public void setScheduledDate(LocalDate scheduledDate) {
+		this.scheduledDate = scheduledDate;
+	}
+
+	public void setFee(BigDecimal fee) {
+		this.fee = fee;
+	}
+
+	public Long getFromAccount() {
 		return fromAccount;
 	}
 
-	public String getToAccount() {
+	public Long getToAccount() {
 		return toAccount;
 	}
 
