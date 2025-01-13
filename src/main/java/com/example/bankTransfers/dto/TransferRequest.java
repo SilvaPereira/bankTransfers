@@ -34,5 +34,5 @@ public class TransferRequest {
 	public void setScheduledDate(LocalDate scheduledDate) {
 		this.scheduledDate = scheduledDate;
 	}
-
+ 
 }
