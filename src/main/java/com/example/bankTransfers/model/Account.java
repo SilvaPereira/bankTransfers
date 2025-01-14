@@ -33,6 +33,14 @@ public class Account {
     @Column(nullable = false)
     private boolean active;
 
+	public Account(BigDecimal balance, String firstName, String lastName, LocalDate creationDate, boolean active) {
+		this.balance = balance;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.creationDate = creationDate;
+		this.active = active;
+	}
+	
 	public Account(Long id, BigDecimal balance, String firstName, String lastName, LocalDate creationDate,
 			boolean active) {
 		this.id = id;

@@ -6,6 +6,8 @@ import java.time.temporal.ChronoUnit;
 
 import org.springframework.stereotype.Service;
 
+import com.example.bankTransfers.exception.InvalidSchedulingException;
+
 @Service
 public class TransferService {
 	
@@ -28,6 +30,7 @@ public class TransferService {
                 return amount.multiply(new BigDecimal("0.017"));
             }
         }
-        throw new RuntimeException("Invalid scheduling parameters");
+        throw new InvalidSchedulingException("Invalid scheduling parameters: amount=" 
+                + amount + ", scheduledDate=" + scheduledDate);
     }
 }
