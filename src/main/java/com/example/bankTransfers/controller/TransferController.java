@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.bankTransfers.dto.TransferRequest;
 import com.example.bankTransfers.exception.AccountNotFoundException;
 import com.example.bankTransfers.exception.ApiResponse;
+import com.example.bankTransfers.exception.ErrorResponse;
 import com.example.bankTransfers.exception.InvalidSchedulingException;
 import com.example.bankTransfers.exception.TransferNotFoundException;
 import com.example.bankTransfers.model.Transfer;
@@ -41,7 +42,7 @@ public class TransferController {
 	}
     
 	@PostMapping
-	public ResponseEntity<ApiResponse> createTransfer(@RequestBody TransferRequest request, HttpServletRequest httpRequest) {
+	public ResponseEntity<?> createTransfer(@RequestBody TransferRequest request, HttpServletRequest httpRequest) {
 		
 		try {
 			checkAccount(request);
@@ -51,61 +52,73 @@ public class TransferController {
 	        
 	        ApiResponse apiResponse = new ApiResponse(
 		            HttpStatus.OK.value(),
-		            HttpStatus.OK.getReasonPhrase(),
-		            null,
 		            httpRequest.getRequestURI());
 	        return ResponseEntity.status(HttpStatus.OK).body(apiResponse); 
 		} catch (AccountNotFoundException ex) {
-			ApiResponse apiResponse = new ApiResponse(
+			ErrorResponse errorResponse = new ErrorResponse(
 		            HttpStatus.NOT_FOUND.value(),
 		            HttpStatus.NOT_FOUND.getReasonPhrase(),
 		            ex.getMessage(),
 		            httpRequest.getRequestURI());
-		    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiResponse);
+		    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
 		} catch (InvalidSchedulingException ex) {
-			ApiResponse apiResponse = new ApiResponse(
+			ErrorResponse errorResponse = new ErrorResponse(
 		            HttpStatus.BAD_REQUEST.value(),
 		            HttpStatus.BAD_REQUEST.getReasonPhrase(),
 		            ex.getMessage(),
 		            httpRequest.getRequestURI());
-		        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse);
+		        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 		}
     }
 	
 	@PutMapping("/{id}")
-    public ResponseEntity<ApiResponse> updateTransfer(@PathVariable Long id, @RequestBody TransferRequest request, HttpServletRequest httpRequest) {
+    public ResponseEntity<?> updateTransfer(@PathVariable Long id, @RequestBody TransferRequest request, HttpServletRequest httpRequest) {
 		
 		try {
 			checkAccount(request);
 		    
 	        Transfer transfer = transferRepository.findById(id).orElseThrow(() -> new TransferNotFoundException("Transfer with ID " + id + " not found"));
-	        transfer.setFromAccount(request.getFromAccount());
-	        transfer.setToAccount(request.getToAccount());
-	        transfer.setAmount(request.getAmount());
-	        transfer.setScheduledDate(request.getScheduledDate());
-	        transfer.setFee(transferService.calculateFee(request.getAmount(), request.getScheduledDate()));
+	        transfer.setFromAccount(request.getFromAccount() != null ? request.getFromAccount() : transfer.getFromAccount());
+	        transfer.setToAccount(request.getToAccount() != null ? request.getToAccount() : transfer.getToAccount());
+	        //Se o amount mudar, o fee tb muda. Se a data mudar a regra tb muda
+	        if (request.getAmount() != null && request.getScheduledDate() != null) {
+	        	transfer.setAmount(request.getAmount());
+		        transfer.setScheduledDate(request.getScheduledDate());
+		        transfer.setFee(transferService.calculateFee(request.getAmount(), request.getScheduledDate()));
+	        } else if(request.getAmount() != null) {
+	        	//enviou amount e data nao -> calcular nova fee
+	        	transfer.setAmount(request.getAmount());
+	        	transfer.setScheduledDate(transfer.getScheduledDate());
+	        	transfer.setFee(transferService.calculateFee(request.getAmount(), transfer.getScheduledDate()));
+	        } else if(request.getScheduledDate() != null){
+	        	//enviou data e amount nao -> calcular nova fee
+	        	transfer.setAmount(transfer.getAmount());
+	        	transfer.setScheduledDate(request.getScheduledDate());
+	        	transfer.setFee(transferService.calculateFee(transfer.getAmount(), request.getScheduledDate()));
+	        } else {
+	        	//nao enviou nenhum -> mesma fee
+		        transfer.setFee(transfer.getFee());
+	        }
 	        transferRepository.save(transfer);
 	        
 	        ApiResponse apiResponse = new ApiResponse(
 		            HttpStatus.OK.value(),
-		            HttpStatus.OK.getReasonPhrase(),
-		            null,
 		            httpRequest.getRequestURI());
 		    return ResponseEntity.status(HttpStatus.OK).body(apiResponse); 
 		} catch (AccountNotFoundException | TransferNotFoundException ex) {
-			ApiResponse apiResponse = new ApiResponse(
+			ErrorResponse errorResponse = new ErrorResponse(
 	            HttpStatus.NOT_FOUND.value(),
 	            HttpStatus.NOT_FOUND.getReasonPhrase(),
 	            ex.getMessage(),
 	            httpRequest.getRequestURI());
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiResponse);
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
 		} catch (InvalidSchedulingException ex) {
-			ApiResponse apiResponse = new ApiResponse(
+			ErrorResponse errorResponse = new ErrorResponse(
 		            HttpStatus.BAD_REQUEST.value(),
 		            HttpStatus.BAD_REQUEST.getReasonPhrase(),
 		            ex.getMessage(),
 		            httpRequest.getRequestURI());
-		        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse);
+		        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 		}
     }
 	
@@ -121,12 +134,12 @@ public class TransferController {
                 .orElseThrow(() -> new TransferNotFoundException("Transfer with ID " + id + " not found"));
             return ResponseEntity.ok(transfer);
     	} catch (TransferNotFoundException ex) {
-    		ApiResponse apiResponse = new ApiResponse(
+    		ErrorResponse errorResponse = new ErrorResponse(
     	            HttpStatus.NOT_FOUND.value(),
     	            HttpStatus.NOT_FOUND.getReasonPhrase(),
     	            ex.getMessage(),
     	            httpRequest.getRequestURI());
-    	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiResponse);
+    	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     	}
     }
     
@@ -136,14 +149,13 @@ public class TransferController {
 			transferRepository.deleteById(id);
 			return ResponseEntity.ok(null);
 		} catch (TransferNotFoundException ex) {
-			ApiResponse apiResponse = new ApiResponse(
+			ErrorResponse errorResponse = new ErrorResponse(
     	            HttpStatus.NOT_FOUND.value(),
     	            HttpStatus.NOT_FOUND.getReasonPhrase(),
     	            ex.getMessage(),
     	            httpRequest.getRequestURI());
-    	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiResponse);
+    	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
 		}
-        
     }
 	
 	private void checkAccount(TransferRequest request) throws AccountNotFoundException {

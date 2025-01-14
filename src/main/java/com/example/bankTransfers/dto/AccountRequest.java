@@ -9,12 +9,12 @@ public class AccountRequest {
 	private String firstName;
 	private String lastName;
 	private LocalDate creationDate;
-	private boolean active;
+	private Boolean active;
 	
 	public AccountRequest() {}
 	
 	public AccountRequest(BigDecimal balance, String firstName, String lastName, LocalDate creationDate,
-			boolean active) {
+			Boolean active) {
 		super();
 		this.balance = balance;
 		this.firstName = firstName;
@@ -49,9 +49,13 @@ public class AccountRequest {
 	public boolean isActive() {
 		return active;
 	}
-	public void setActive(boolean active) {
+	public void setActive(Boolean active) {
 		this.active = active;
 	}
-	
-	
+	public Boolean getIsActive() {
+        return active;
+    }
+    public void setIsActive(Boolean isActive) {
+        this.active = isActive;
+    }
 }
