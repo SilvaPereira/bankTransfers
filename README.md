@@ -26,9 +26,9 @@ Endpoints criados
 
 Account
 
-GET /account/{id} - Retorna uma conta
-GET /account - Retorna todas as contas
-POST /account - Cria uma nova conta
+GET /account/{id} - Retorna uma conta \n
+GET /account - Retorna todas as contas \n 
+POST /account - Cria uma nova conta \n
 PUT /account/{id} - Editar uma conta já criada
 DELETE /account/{id} - Elimina uma conta
 
