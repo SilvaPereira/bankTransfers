@@ -41,9 +41,12 @@ public class AccountController {
 	        Account account = new Account(request.getBalance(), request.getFirstName(), request.getLastName(), today, true);
 	        accountRepository.save(account);
 	        
+	        
 	        ApiResponse apiResponse = new ApiResponse(
 		            HttpStatus.OK.value(),
-		            httpRequest.getRequestURI());
+		            httpRequest.getRequestURI(),
+		            account);
+
 	        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
 		} catch (Exception ex) {
 			ErrorResponse errorResponse = new ErrorResponse(
@@ -68,7 +71,8 @@ public class AccountController {
 	        accountRepository.save(account);
 			ApiResponse apiResponse = new ApiResponse(
 		            HttpStatus.OK.value(),
-		            httpRequest.getRequestURI());
+		            httpRequest.getRequestURI(),
+		            account);
 		    return ResponseEntity.status(HttpStatus.OK).body(apiResponse); 
 		} catch (AccountNotFoundException ex) {
 			ErrorResponse errorResponse = new ErrorResponse(

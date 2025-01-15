@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,6 +30,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/transfers")
+@CrossOrigin(origins = "*") 
 public class TransferController {
 
 	private final TransferRepository transferRepository;
@@ -52,7 +54,8 @@ public class TransferController {
 	        
 	        ApiResponse apiResponse = new ApiResponse(
 		            HttpStatus.OK.value(),
-		            httpRequest.getRequestURI());
+		            httpRequest.getRequestURI(),
+		            transfer);
 	        return ResponseEntity.status(HttpStatus.OK).body(apiResponse); 
 		} catch (AccountNotFoundException ex) {
 			ErrorResponse errorResponse = new ErrorResponse(
@@ -103,7 +106,8 @@ public class TransferController {
 	        
 	        ApiResponse apiResponse = new ApiResponse(
 		            HttpStatus.OK.value(),
-		            httpRequest.getRequestURI());
+		            httpRequest.getRequestURI(),
+		            transfer);
 		    return ResponseEntity.status(HttpStatus.OK).body(apiResponse); 
 		} catch (AccountNotFoundException | TransferNotFoundException ex) {
 			ErrorResponse errorResponse = new ErrorResponse(
@@ -146,6 +150,9 @@ public class TransferController {
 	@DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTransfer(@PathVariable Long id, HttpServletRequest httpRequest) {
 		try {
+	        transferRepository.findById(id)
+	                .orElseThrow(() -> new TransferNotFoundException("Transfer with ID " + id + " not found"));
+
 			transferRepository.deleteById(id);
 			return ResponseEntity.ok(null);
 		} catch (TransferNotFoundException ex) {

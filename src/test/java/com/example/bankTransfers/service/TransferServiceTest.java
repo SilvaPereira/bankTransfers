@@ -9,6 +9,8 @@ import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
 
+import com.example.bankTransfers.exception.InvalidSchedulingException;
+
 public class TransferServiceTest {
 
 	private final TransferService transferService = new TransferService();
@@ -74,7 +76,7 @@ public class TransferServiceTest {
         Exception exception = assertThrows(RuntimeException.class, () -> {
             transferService.calculateFee(amount, scheduledDate);
         });
-        assertEquals("Invalid scheduling parameters", exception.getMessage());
+        assertEquals("Invalid scheduling parameters: amount=" + amount + ", scheduledDate=" + scheduledDate, exception.getMessage());
     }
 }
 

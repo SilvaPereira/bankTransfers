@@ -3,6 +3,8 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 @Entity
 @Table(name = "TRANSFERS")
 public class Transfer {
@@ -21,6 +23,7 @@ public class Transfer {
     private BigDecimal amount;
 
     @Column(nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate scheduledDate;
 
     @Column(nullable = false)

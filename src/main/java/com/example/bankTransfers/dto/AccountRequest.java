@@ -22,6 +22,12 @@ public class AccountRequest {
 		this.creationDate = creationDate;
 		this.active = active;
 	}
+	public AccountRequest(BigDecimal balance, String firstName, String lastName) {
+		super();
+		this.balance = balance;
+		this.firstName = firstName;
+		this.lastName = lastName;
+	}
 	public BigDecimal getBalance() {
 		return balance;
 	}
@@ -46,8 +52,11 @@ public class AccountRequest {
 	public void setCreationDate(LocalDate creationDate) {
 		this.creationDate = creationDate;
 	}
-	public boolean isActive() {
-		return active;
+	public Boolean isActive() {
+	    if (active == null) {
+	        return false;
+	    }
+	    return active;
 	}
 	public void setActive(Boolean active) {
 		this.active = active;
