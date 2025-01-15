@@ -23,24 +23,31 @@ public class TransferRequest {
 	public Long getFromAccount() {
 		return fromAccount;
 	}
+	
 	public void setFromAccount(Long fromAccount) {
 		this.fromAccount = fromAccount;
 	}
+	
 	public Long getToAccount() {
 		return toAccount;
 	}
+	
 	public void setToAccount(Long toAccount) {
 		this.toAccount = toAccount;
 	}
+	
 	public BigDecimal getAmount() {
 		return amount;
 	}
+	
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
 	}
+	
 	public LocalDate getScheduledDate() {
 		return scheduledDate;
 	}
+	
 	public void setScheduledDate(LocalDate scheduledDate) {
 		this.scheduledDate = scheduledDate;
 	}

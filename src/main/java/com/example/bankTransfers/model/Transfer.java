@@ -1,4 +1,5 @@
 package com.example.bankTransfers.model;
+
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -30,7 +31,6 @@ public class Transfer {
     private BigDecimal fee;
 	
     public Transfer() {
-    	
     }
     
 	public Transfer(Long id, Long fromAccount, Long toAccount, BigDecimal amount, LocalDate scheduledDate,

@@ -39,8 +39,7 @@ public class AccountController {
 	        
 	        LocalDate today = LocalDate.now();
 	        Account account = new Account(request.getBalance(), request.getFirstName(), request.getLastName(), today, true);
-	        accountRepository.save(account);
-	        
+	        account = accountRepository.save(account);
 	        
 	        ApiResponse apiResponse = new ApiResponse(
 		            HttpStatus.OK.value(),
@@ -105,7 +104,6 @@ public class AccountController {
     	}
     }
     
-    //TODO Delete Account
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteAccount(@PathVariable Long id, HttpServletRequest httpRequest) {
 		try {

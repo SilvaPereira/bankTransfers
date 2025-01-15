@@ -36,9 +36,7 @@ public class Account {
     @Column(nullable = false)
     private boolean active;
 
-    
 	public Account() {
-
 	}
 
 	public Account(BigDecimal balance, String firstName, String lastName, LocalDate creationDate, boolean active) {

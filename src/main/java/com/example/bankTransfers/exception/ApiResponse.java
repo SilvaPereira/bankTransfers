@@ -1,8 +1,6 @@
 package com.example.bankTransfers.exception;
 
 import java.time.LocalDateTime;
-import com.example.bankTransfers.model.Account;
-import com.example.bankTransfers.model.Transfer;
 
 public class ApiResponse {
 
@@ -16,13 +14,6 @@ public class ApiResponse {
 		this.path = path;
 		this.timestamp = LocalDateTime.now();
 	}
-
-//	public ApiResponse(int status, String path, Transfer data) {
-//		this.status = status;
-//		this.path = path;
-//		this.timestamp = LocalDateTime.now();
-//		this.data = data;
-//	}
 	
 	public ApiResponse(int status, String path, Object data) {
 		this.status = status;
@@ -66,6 +57,5 @@ public class ApiResponse {
 	public void setTimestamp(LocalDateTime timestamp) {
 		this.timestamp = timestamp;
 	}
-	  
 	  
 }

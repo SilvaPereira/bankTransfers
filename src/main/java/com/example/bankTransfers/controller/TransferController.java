@@ -83,23 +83,20 @@ public class TransferController {
 	        Transfer transfer = transferRepository.findById(id).orElseThrow(() -> new TransferNotFoundException("Transfer with ID " + id + " not found"));
 	        transfer.setFromAccount(request.getFromAccount() != null ? request.getFromAccount() : transfer.getFromAccount());
 	        transfer.setToAccount(request.getToAccount() != null ? request.getToAccount() : transfer.getToAccount());
-	        //Se o amount mudar, o fee tb muda. Se a data mudar a regra tb muda
+
 	        if (request.getAmount() != null && request.getScheduledDate() != null) {
 	        	transfer.setAmount(request.getAmount());
 		        transfer.setScheduledDate(request.getScheduledDate());
 		        transfer.setFee(transferService.calculateFee(request.getAmount(), request.getScheduledDate()));
 	        } else if(request.getAmount() != null) {
-	        	//enviou amount e data nao -> calcular nova fee
 	        	transfer.setAmount(request.getAmount());
 	        	transfer.setScheduledDate(transfer.getScheduledDate());
 	        	transfer.setFee(transferService.calculateFee(request.getAmount(), transfer.getScheduledDate()));
 	        } else if(request.getScheduledDate() != null){
-	        	//enviou data e amount nao -> calcular nova fee
 	        	transfer.setAmount(transfer.getAmount());
 	        	transfer.setScheduledDate(request.getScheduledDate());
 	        	transfer.setFee(transferService.calculateFee(transfer.getAmount(), request.getScheduledDate()));
 	        } else {
-	        	//nao enviou nenhum -> mesma fee
 		        transfer.setFee(transfer.getFee());
 	        }
 	        transferRepository.save(transfer);
